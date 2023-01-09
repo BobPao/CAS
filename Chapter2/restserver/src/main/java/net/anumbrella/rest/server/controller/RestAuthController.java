@@ -3,6 +3,7 @@ package net.anumbrella.rest.server.controller;
 
 import net.anumbrella.rest.server.entity.SysUser;
 import net.anumbrella.rest.server.util.Base64Utils;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -12,7 +13,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * @author anumbrella
@@ -31,7 +35,9 @@ public class RestAuthController {
      * @return
      */
     @PostMapping("/login")
-    public Object login(@RequestHeader HttpHeaders httpHeaders) {
+    public Object login(@RequestHeader HttpHeaders httpHeaders, HttpServletRequest request) {
+        Map<String, String[]> params = request.getParameterMap();
+        String url = request.getRemoteAddr();
         LOGGER.info("Rest api login.");
         LOGGER.debug("request headers: {}", httpHeaders);
         SysUser user = null;
@@ -39,8 +45,8 @@ public class RestAuthController {
             UserTemp userTemp = obtainUserFormHeader(httpHeaders);
             //尝试查找用户库是否存在
             user = new SysUser();
-            user.setUsername("anumbrella");
-            user.setPassword("123");
+            user.setUsername("test");
+            user.setPassword("202cb962ac59075b964b07152d234b70");
             if (user != null) {
                 if (!user.getPassword().equals(userTemp.password)) {
                     //密码不匹配
